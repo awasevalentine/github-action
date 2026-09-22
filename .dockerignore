@@ -1,7 +1,14 @@
-# dependencies
-
 node_modules
+dist
+coverage
 
-# git, vscode
 .git
+.github
 .vscode
+
+Dockerfile
+.dockerignore
+
+.env
+.env.*
+npm-debug.log*
