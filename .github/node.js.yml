@@ -2,19 +2,29 @@ name: Node.js CI
 
 on:
   push:
-    branches: [master]
+    branches:
+      - master
   pull_request:
-    branches: [master]
+    branches:
+      - master
+
+permissions:
+  contents: read
 
 jobs:
   build:
     runs-on: ubuntu-latest
+
     strategy:
       matrix:
-        node-version: [18.x, 20.x, 22.x]
+        node-version:
+          - 18.x
+          - 20.x
+          - 22.x
 
     steps:
-      - uses: actions/checkout@v4
+      - name: Check out repository
+        uses: actions/checkout@v4
 
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v4
@@ -22,20 +32,32 @@ jobs:
           node-version: ${{ matrix.node-version }}
           cache: npm
 
-      - run: npm ci
-      - run: npm run build --if-present
-      - run: npm test
+      - name: Install dependencies
+        run: npm ci
 
-      # Do not publish images for pull requests or once per matrix entry.
+      - name: Build
+        run: npm run build --if-present
+
+      - name: Test
+        run: npm test
+
+      # Publish only once, after the Node.js 22 test job, and never for pull requests.
       - name: Log in to Docker Hub
-        if: matrix.node-version == '22.x' && github.event_name == 'push'
+        if: >
+          matrix.node-version == '22.x' &&
+          github.event_name == 'push' &&
+          github.ref == 'refs/heads/master'
         uses: docker/login-action@v3
         with:
+          registry: docker.io
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
 
       - name: Build and push Docker image
-        if: matrix.node-version == '22.x' && github.event_name == 'push'
+        if: >
+          matrix.node-version == '22.x' &&
+          github.event_name == 'push' &&
+          github.ref == 'refs/heads/master'
         uses: docker/build-push-action@v6
         with:
           context: .
