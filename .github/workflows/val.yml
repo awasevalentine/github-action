@@ -75,5 +75,5 @@ jobs:
           context: .
           push: true
           tags: |
-            awasevalentine/vally:latest
+            awasevalentine/vally:val
             awasevalentine/vally:${{ github.sha }}
