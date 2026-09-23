@@ -42,12 +42,12 @@
     "typescript": "^5.7.3",
     "typescript-eslint": "^8.20.0"
   },
-  "jest": {
-    "rootDir": ".",
-    "testEnvironment": "node",
-    "testMatch": ["**/*.spec.ts"],
-    "transform": {
-      "^.+\\.(t|j)s$": "ts-jest"
-    }
+"jest": {
+  "rootDir": ".",
+  "testEnvironment": "node",
+  "testMatch": ["**/?(*.)+(spec|test).[tj]s?(x)"],
+  "transform": {
+    "^.+\\.(t|j)s$": "ts-jest"
   }
+}
 }
